@@ -1,81 +1,78 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
+import type { Team } from '~/types'
 
 const route = useRoute()
 const toast = useToast()
 
 const open = ref(false)
 
-const links = [[{
+// Fetch teams data first
+const { data: teams } = await useFetch<Team[]>('/api/teams', { default: () => [] })
+
+// Navigation items with teams dropdown
+const staticItems = computed(() => [{
   label: 'Home',
   icon: 'i-lucide-house',
-  to: '/',
-  onSelect: () => {
-    open.value = false
-  }
+  to: '/coaches',
+  onSelect: () => { open.value = false }
 }, {
-  label: 'Inbox',
-  icon: 'i-lucide-inbox',
-  to: '/inbox',
-  badge: '4',
-  onSelect: () => {
-    open.value = false
-  }
-}, {
-  label: 'Customers',
+  label: 'Roster',
   icon: 'i-lucide-users',
-  to: '/customers',
-  onSelect: () => {
-    open.value = false
-  }
+  to: '/coaches/roster',
+  onSelect: () => { open.value = false }
+}, {
+  label: 'Schedule',
+  icon: 'i-lucide-calendar-clock',
+  to: '/coaches/schedule',
+  onSelect: () => { open.value = false }
+}, {
+  label: 'Training',
+  icon: 'i-lucide-dumbbell',
+  to: '/coaches/training',
+  onSelect: () => { open.value = false }
+}, {
+  label: 'Teams',
+  icon: 'i-lucide-shield',
+  type: 'trigger' as const,
+  defaultOpen: false,
+  children: [
+    {
+      label: 'All Teams',
+      to: '/coaches/teams',
+      icon: 'i-lucide-list',
+      onSelect: () => { open.value = false }
+    },
+    ...(teams.value || []).map((team) => ({
+      label: team.name,
+      to: `/coaches/roster?team=${team.id}`,
+      badge: team.abbreviation,
+      onSelect: () => { open.value = false }
+    }))
+  ]
 }, {
   label: 'Settings',
   to: '/settings',
   icon: 'i-lucide-settings',
   defaultOpen: true,
-  type: 'trigger',
+  type: 'trigger' as const,
   children: [{
     label: 'General',
     to: '/settings',
     exact: true,
-    onSelect: () => {
-      open.value = false
-    }
-  }, {
-    label: 'Members',
-    to: '/settings/members',
-    onSelect: () => {
-      open.value = false
-    }
-  }, {
-    label: 'Notifications',
-    to: '/settings/notifications',
-    onSelect: () => {
-      open.value = false
-    }
-  }, {
-    label: 'Security',
-    to: '/settings/security',
-    onSelect: () => {
-      open.value = false
-    }
+    onSelect: () => { open.value = false }
   }]
-}], [{
-  label: 'Feedback',
-  icon: 'i-lucide-message-circle',
-  to: 'https://github.com/nuxt-ui-pro/dashboard',
-  target: '_blank'
-}, {
-  label: 'Help & Support',
-  icon: 'i-lucide-info',
-  to: 'https://github.com/nuxt/ui-pro',
-  target: '_blank'
-}]] satisfies NavigationMenuItem[][]
+}])
+
+// Empty team items array since teams are now in the dropdown
+const teamItems = computed<NavigationMenuItem[]>(() => [])
+
+const links = computed<NavigationMenuItem[][]>(() => [staticItems.value, teamItems.value])
 
 const groups = computed(() => [{
   id: 'links',
   label: 'Go to',
-  items: links.flat()
+  items: links.value.flat()
 }, {
   id: 'code',
   label: 'Code',
@@ -125,7 +122,7 @@ onMounted(async () => {
       :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #header="{ collapsed }">
-        <TeamsMenu :collapsed="collapsed" />
+        <SidebarHeader :collapsed="collapsed" />
       </template>
 
       <template #default="{ collapsed }">
@@ -139,11 +136,13 @@ onMounted(async () => {
           popover
         />
 
+        <!-- Teams dropdown/navigation -->
         <UNavigationMenu
           :collapsed="collapsed"
           :items="links[1]"
           orientation="vertical"
           tooltip
+          popover
           class="mt-auto"
         />
       </template>
@@ -157,6 +156,6 @@ onMounted(async () => {
 
     <slot />
 
-    <NotificationsSlideover />
+    
   </UDashboardGroup>
 </template>

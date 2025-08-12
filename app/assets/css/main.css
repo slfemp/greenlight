@@ -16,3 +16,28 @@
   --color-green-900: #0A5331;
   --color-green-950: #052E16;
 }
+
+/* Global background via Nuxt UI token */
+:root, .ui-dark {
+  /* Core surfaces */
+  --ui-bg: #071000;           /* Background */
+  --ui-elevated: #0B1A00;     /* Side Drawer / elevated surfaces */
+  --ui-bg-elevated: #0B1A00;  /* Alias for safety */
+  --ui-bg-soft: #FFFEEB;      /* Background-Light */
+
+  /* Brand & accents */
+  --ui-primary: #3BFF42;      /* Accent */
+  --ui-accent: #FF3E1B;       /* Highlight */
+  --ui-secondary: #023609;    /* Secondary */
+  --ui-tertiary: #558200;     /* Tertiary */
+
+  /* Content */
+  --ui-text: #FFFFFF;         /* Text-Primary */
+  --ui-text-highlighted: #FFFFFF;
+  --ui-text-dimmed: #E7FFD7;  /* Text-light */
+  --ui-border: #023609;       /* Subtle borders */
+}
+
+html, body, #__nuxt {
+  background-color: var(--ui-bg, #071000);
+}

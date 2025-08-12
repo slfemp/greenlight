@@ -3,28 +3,26 @@ import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
 const schema = z.object({
-  name: z.string().min(2, 'Too short'),
-  email: z.string().email('Invalid email')
+  name: z.string().min(2, 'Too short')
 })
 const open = ref(false)
 
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  name: undefined,
-  email: undefined
+  name: undefined
 })
 
 const toast = useToast()
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({ title: 'Success', description: `New customer ${event.data.name} added`, color: 'success' })
+  toast.add({ title: 'Success', description: `New player ${event.data.name} added`, color: 'success' })
   open.value = false
 }
 </script>
 
 <template>
-  <UModal v-model:open="open" title="New customer" description="Add a new customer to the database">
-    <UButton label="New customer" icon="i-lucide-plus" />
+  <UModal v-model:open="open" title="New player" description="Add a new player to the database">
+    <UButton label="New player" icon="i-lucide-plus" />
 
     <template #body>
       <UForm
@@ -35,9 +33,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UFormField label="Name" placeholder="John Doe" name="name">
           <UInput v-model="state.name" class="w-full" />
-        </UFormField>
-        <UFormField label="Email" placeholder="john.doe@example.com" name="email">
-          <UInput v-model="state.email" class="w-full" />
         </UFormField>
         <div class="flex justify-end gap-2">
           <UButton

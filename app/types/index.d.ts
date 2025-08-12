@@ -1,6 +1,8 @@
 import type { AvatarProps } from '@nuxt/ui'
+export type { Team, TeamStats } from './team'
 
 export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
+export type PlayerStatus = 'green' | 'yellow' | 'red'
 export type SaleStatus = 'paid' | 'failed' | 'refunded'
 
 export interface User {
@@ -10,6 +12,27 @@ export interface User {
   avatar?: AvatarProps
   status: UserStatus
   location: string
+}
+
+export interface Player {
+  id: number
+  name: string
+  avatar?: AvatarProps
+  status: PlayerStatus
+  teamId?: string
+  position?: string
+  jerseyNumber?: string
+  birthDate?: string
+  stats?: PlayerGameStat[]
+  lastUpdate?: string
+}
+
+export interface PlayerGameStat {
+  date: string
+  pitchCount: number
+  pitchesPerInning: number
+  inningsPitched: number
+  restDays: number
 }
 
 export interface Mail {

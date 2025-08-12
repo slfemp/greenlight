@@ -1,13 +1,11 @@
 <script setup lang="ts">
-const colorMode = useColorMode()
-
-const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white')
+const themeColor = '#071000'
 
 useHead({
   meta: [
     { charset: 'utf-8' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    { key: 'theme-color', name: 'theme-color', content: color }
+    { key: 'theme-color', name: 'theme-color', content: themeColor }
   ],
   link: [
     { rel: 'icon', href: '/favicon.ico' }
@@ -17,7 +15,7 @@ useHead({
   }
 })
 
-const title = 'Nuxt Dashboard Template'
+const title = 'GreenLight Labs'
 const description = 'A professional dashboard template built with Nuxt UI Pro, featuring multiple pages, data visualization, and comprehensive management capabilities for creating powerful admin interfaces.'
 
 useSeoMeta({
@@ -39,4 +37,5 @@ useSeoMeta({
       <NuxtPage />
     </NuxtLayout>
   </UApp>
+  
 </template>
