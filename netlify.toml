@@ -1,6 +1,7 @@
 [build]
   command = "pnpm install --frozen-lockfile && pnpm build"
-  publish = ".output/public"
+  # Nitro Netlify preset outputs to .netlify/publish
+  publish = ".netlify/publish"
 
 # Optional: cache pnpm store between builds
 [build.environment]
