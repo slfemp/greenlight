@@ -1,0 +1,13 @@
+[build]
+  command = "pnpm install --frozen-lockfile && pnpm build"
+  publish = ".output/public"
+
+# Optional: cache pnpm store between builds
+[build.environment]
+  NPM_FLAGS = "--version" # Prevent Netlify from running npm install
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+

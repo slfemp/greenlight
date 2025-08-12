@@ -1,6 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   ssr: false,
+  nitro: {
+    // Ensure server/api is compiled to Netlify Functions
+    preset: 'netlify'
+  },
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui-pro',
