@@ -2,6 +2,10 @@
 import { sub } from 'date-fns'
 import type { DropdownMenuItem } from '@nuxt/ui'
 import type { Period, Range } from '~/types'
+import PitchesChart from '~/components/coaches/PitchesChart.client.vue'
+import CurrentStatus from '~/components/coaches/CurrentStatus.vue'
+import TodaysPlan from '~/components/coaches/TodaysPlan.vue'
+import UpcomingGames from '~/components/coaches/UpcomingGames.vue'
 
 const items = [[{
   label: 'New player',
@@ -42,7 +46,15 @@ const period = ref<Period>('daily')
     </template>
 
     <template #body>
-      <HomeStats :period="period" :range="range" />
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
+        <!-- Row 1 -->
+        <PitchesChart />
+        <CurrentStatus />
+        
+        <!-- Row 2 -->
+        <TodaysPlan />
+        <UpcomingGames />
+      </div>
     </template>
   </UDashboardPanel>
 </template>

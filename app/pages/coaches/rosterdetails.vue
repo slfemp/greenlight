@@ -73,10 +73,9 @@ const points = computed<StatPoint[]>(() => {
               <p class="text-highlighted font-medium">#{{ player?.jerseyNumber || 'N/A' }}</p>
             </div>
             <div>
-              <p class="text-xs text-muted uppercase mb-1">Status</p>
-              <UBadge :color="player?.status === 'yellow' ? 'warning' : player?.status === 'red' ? 'error' : 'success'" variant="subtle" class="capitalize">
-                {{ player?.status || 'N/A' }}
-              </UBadge>
+              <div class="flex justify-center">
+                <StatusIndicator :status="player?.status || 'green'" size="md" />
+              </div>
             </div>
           </div>
         </UPageCard>

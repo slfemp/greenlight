@@ -17,6 +17,11 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  ui: {
+    primary: 'green',
+    gray: 'slate'
+  },
+
   routeRules: {
     '/api/**': {
       cors: true

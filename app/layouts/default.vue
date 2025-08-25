@@ -34,22 +34,8 @@ const staticItems = computed(() => [{
 }, {
   label: 'Teams',
   icon: 'i-lucide-shield',
-  type: 'trigger' as const,
-  defaultOpen: false,
-  children: [
-    {
-      label: 'All Teams',
-      to: '/coaches/teams',
-      icon: 'i-lucide-list',
-      onSelect: () => { open.value = false }
-    },
-    ...(teams.value || []).map((team) => ({
-      label: team.name,
-      to: `/coaches/roster?team=${team.id}`,
-      badge: team.abbreviation,
-      onSelect: () => { open.value = false }
-    }))
-  ]
+  to: '/coaches/teams',
+  onSelect: () => { open.value = false }
 }, {
   label: 'Settings',
   to: '/settings',

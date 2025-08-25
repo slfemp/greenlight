@@ -2,6 +2,7 @@
 import type { Team } from '~/types'
 
 const { data: teams, status } = await useFetch<Team[]>('/api/teams')
+const router = useRouter()
 
 // Calculate aggregated stats for each team
 const teamsWithStats = ref([])
@@ -16,6 +17,18 @@ onMounted(async () => {
   
   teamsWithStats.value = await Promise.all(statsPromises)
 })
+
+function createNewTeam() {
+  router.push('/coaches/teams/create')
+}
+
+function editTeam(teamId: string) {
+  router.push(`/coaches/teams/${teamId}/edit`)
+}
+
+function viewTeamRoster(teamId: string) {
+  router.push(`/coaches/roster?team=${teamId}`)
+}
 
 const columns = [
   {
@@ -86,14 +99,25 @@ const columns = [
 <template>
   <UDashboardPanel id="teams">
     <template #header>
-      <UDashboardNavbar title="Teams Overview">
+      <UDashboardNavbar title="Teams Management">
         <template #leading>
           <UDashboardSidebarCollapse />
+        </template>
+        
+        <template #right>
+          <UButton 
+            icon="i-lucide-plus" 
+            color="primary"
+            @click="createNewTeam"
+          >
+            New Team
+          </UButton>
         </template>
       </UDashboardNavbar>
     </template>
 
     <template #body>
+      <!-- Stats Overview -->
       <UCard class="mb-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="text-center">
@@ -121,18 +145,139 @@ const columns = [
         </div>
       </UCard>
 
-      <UTable
-        :data="teamsWithStats"
-        :columns="columns"
-        :loading="status === 'pending' || teamsWithStats.length === 0"
-        :ui="{
-          base: 'table-fixed border-separate border-spacing-0',
-          thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
-          tbody: '[&>tr]:last:[&>td]:border-b-0',
-          th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
-          td: 'border-b border-default'
-        }"
-      />
+      <!-- Loading State -->
+      <div v-if="status === 'pending'" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+        <span class="ml-2">Loading teams...</span>
+      </div>
+
+      <!-- Team Cards Grid -->
+      <div v-else-if="teams && teams.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <UCard 
+          v-for="team in teams" 
+          :key="team.id"
+          class="hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+          :style="{ borderColor: team.primaryColor }"
+        >
+          <template #header>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div 
+                  class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                  :style="{ backgroundColor: team.primaryColor }"
+                >
+                  {{ team.abbreviation }}
+                </div>
+                <div>
+                  <h3 class="font-semibold text-lg">{{ team.name }}</h3>
+                  <p class="text-sm text-muted">{{ team.division }} Division</p>
+                </div>
+              </div>
+              
+              <UDropdownMenu 
+                :items="[
+                  [{
+                    label: 'View Roster',
+                    icon: 'i-lucide-users',
+                    click: () => viewTeamRoster(team.id)
+                  }],
+                  [{
+                    label: 'Edit Team',
+                    icon: 'i-lucide-edit',
+                    click: () => editTeam(team.id)
+                  }, {
+                    label: 'Delete Team',
+                    icon: 'i-lucide-trash',
+                    color: 'error'
+                  }]
+                ]"
+              >
+                <UButton 
+                  icon="i-lucide-more-vertical" 
+                  variant="ghost" 
+                  color="gray"
+                  size="sm"
+                />
+              </UDropdownMenu>
+            </div>
+          </template>
+
+          <div class="space-y-4">
+            <!-- Team Info -->
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p class="text-muted">Head Coach</p>
+                <p class="font-medium">{{ team.coach }}</p>
+              </div>
+              <div>
+                <p class="text-muted">Established</p>
+                <p class="font-medium">{{ team.established }}</p>
+              </div>
+              <div class="col-span-2">
+                <p class="text-muted">Home Field</p>
+                <p class="font-medium">{{ team.homeField }}</p>
+              </div>
+            </div>
+
+            <!-- Player Stats -->
+            <div class="border-t pt-4">
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <p class="text-2xl font-bold text-highlighted">
+                    {{ teamsWithStats.find(t => t.id === team.id)?.playerCount || 0 }}
+                  </p>
+                  <p class="text-xs text-muted">Players</p>
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-success">
+                    {{ teamsWithStats.find(t => t.id === team.id)?.activePlayerCount || 0 }}
+                  </p>
+                  <p class="text-xs text-muted">Active</p>
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-error">
+                    {{ teamsWithStats.find(t => t.id === team.id)?.restingPlayerCount || 0 }}
+                  </p>
+                  <p class="text-xs text-muted">Resting</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-2 pt-2">
+              <UButton 
+                size="sm" 
+                color="primary" 
+                variant="soft" 
+                icon="i-lucide-users"
+                class="flex-1"
+                @click="viewTeamRoster(team.id)"
+              >
+                View Roster
+              </UButton>
+              <UButton 
+                size="sm" 
+                color="gray" 
+                variant="soft" 
+                icon="i-lucide-edit"
+                @click="editTeam(team.id)"
+              >
+                Edit
+              </UButton>
+            </div>
+          </div>
+        </UCard>
+      </div>
+
+      <!-- Empty State -->
+      <div v-else class="text-center py-12">
+        <UIcon name="i-lucide-shield" class="w-12 h-12 text-gray-400 mx-auto mb-4" />
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No teams found</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-4">Create your first team to get started.</p>
+        <UButton color="primary" @click="createNewTeam">
+          Create Team
+        </UButton>
+      </div>
     </template>
   </UDashboardPanel>
 </template>
