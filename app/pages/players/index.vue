@@ -121,7 +121,7 @@ const template = (d: any) => `${d.date}: ${d.count} pitches`
     </div>
 
     <!-- Dashboard Content with Dark Green Background -->
-    <div class="p-4 rounded-t-3xl space-y-4 pb-8" style="background-color: #081308;">
+    <div class="p-4 rounded-t-3xl space-y-4 pb-16" style="background-color: #081308;">
       <!-- Calendar Notifications -->
       <CalendarNotifications />
 

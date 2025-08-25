@@ -3,9 +3,14 @@ definePageMeta({ layout: false })
 
 const links = ref([
   {
-    label: 'Get started',
+    label: 'Coaches Dashboard',
     to: '/coaches',
-    icon: 'i-lucide-square-play'
+    icon: 'i-lucide-users'
+  },
+  {
+    label: 'Players App',
+    to: '/players',
+    icon: 'i-lucide-user'
   }
 ])
 </script>

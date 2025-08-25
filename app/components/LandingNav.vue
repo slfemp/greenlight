@@ -25,12 +25,28 @@ const items = computed<NavigationMenuItem[]>(() => ([
       </NuxtLink>
     </template>
 
-    <UNavigationMenu :items="items" />
+    <!-- Navigation items displayed inline -->
+    <div class="hidden md:flex items-center space-x-6">
+      <NuxtLink 
+        v-for="item in items" 
+        :key="item.to"
+        :to="item.to"
+        class="text-sm font-medium hover:text-primary transition-colors"
+        :class="{ 'text-primary': item.active }"
+      >
+        {{ item.label }}
+      </NuxtLink>
+    </div>
 
     <template #right>
-      <NuxtLink to="/coaches">
-        <UButton color="primary" variant="solid" class="rounded-full">Get Started</UButton>
-      </NuxtLink>
+      <div class="flex items-center space-x-2">
+        <NuxtLink to="/coaches">
+          <UButton color="primary" variant="outline" size="sm" class="rounded-full">Coaches</UButton>
+        </NuxtLink>
+        <NuxtLink to="/players">
+          <UButton color="primary" variant="solid" size="sm" class="rounded-full">Players</UButton>
+        </NuxtLink>
+      </div>
     </template>
   </UHeader>
 </template>
